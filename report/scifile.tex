@@ -3,8 +3,13 @@
 \documentclass[12pt]{article}
 
 \usepackage{scicite}
+\usepackage[utf8]{inputenc} %utf8 % lettere accentate da tastiera
+\usepackage[english]{babel} % lingua del documento
+\usepackage[T1]{fontenc} % codifica dei font
 \usepackage[backend=bibtex,sorting=none, backref=true]{biblatex}
 \usepackage{times}
+\usepackage{amssymb}
+\usepackage{amsmath}
 
 \topmargin 0.0cm
 \oddsidemargin 0.2cm
@@ -18,6 +23,27 @@
 
 
 \renewcommand\refname{References and Notes}
+
+\newcounter{problem}
+\newcounter{solution}
+
+\newcommand\Problem{%
+	\stepcounter{problem}%
+	\textbf{\theproblem.}~%
+	\setcounter{solution}{0}%
+}
+
+\newcommand\TheSolution{%
+	\textbf{Solution:}\\%
+}
+
+\newcommand\ASolution{%
+	\stepcounter{solution}%
+	\textbf{Solution \thesolution:}\\%
+}
+
+\parindent 0in
+\parskip 1em
 
 \newcounter{lastnote}
 \newenvironment{scilastnote}{%
@@ -48,12 +74,35 @@
 
 \maketitle 
 
-%\section*{Introduction}
-
-
 \section{The Perceptron}
 
+\Problem{What is the dimension of the output vector $\overline{y}$ if we assume a batch of input data in form $\underline{x} \in \mathbb{R}^{d \times k}$?}
 
+\TheSolution {…}
+
+\Problem{Write down the vectorized equation for the forward pass, if input $\underline{x} \in \mathbb{R}^{d \times k}$ is batch of data, and $\overline{1}_d$ is a length $d$ long vector of ones (watch out for dimensions to match).}
+
+\TheSolution {…}
+
+\Problem{Write down the vectorized equation for the MSE of the perceptron.}
+
+\TheSolution {…}
+
+\Problem{Determine the derivative of the error function w.r.t weights \textit{Hint: $\frac{\partial \overline{x}^T\overline{x}}{\partial\overline{x}^T} = 2\overline{x}$}}
+
+\TheSolution {…}
+
+\Problem{Write down the equation of the weight update by gradient descent.}
+
+\TheSolution {…}
+
+\Problem{Suppose $k = 3\mbox{, }d =10$, with a batch of data given in Table 1. The initial weights are $w_1 = -0.1$, $w_2 = -0.3$, $w_3 = 0.2$ and the bias weight is $b = 2$. Compute the weights after one step of gradient descent with learning rate of $\eta = 0.02$ (report their value up to 2 decimal points). \textit{Hint: MATLAB/Octave/Python might come in handy here.}}
+
+\TheSolution {…}
+
+\Problem{Learning in multi-layer neural networks is usually done with help of two methods: back-propagation and gradient descent. Describe briefly what role in the learning process each of the two has (Should not be longer than $6$ lines).}
+
+\TheSolution {…}
 
 \printbibliography
 \nocite{*}
