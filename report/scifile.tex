@@ -1,0 +1,81 @@
+% Use only LaTeX2e, calling the article.cls class and 12-point type.
+
+\documentclass[12pt]{article}
+
+\usepackage{scicite}
+\usepackage[backend=bibtex,sorting=none, backref=true]{biblatex}
+\usepackage{times}
+
+\topmargin 0.0cm
+\oddsidemargin 0.2cm
+\textwidth 16cm 
+\textheight 21cm
+\footskip 1.0cm
+
+\newenvironment{sciabstract}{%
+\begin{quote} \bf}
+{\end{quote}}
+
+
+\renewcommand\refname{References and Notes}
+
+\newcounter{lastnote}
+\newenvironment{scilastnote}{%
+\setcounter{lastnote}{\value{enumiv}}%
+\addtocounter{lastnote}{+1}%
+\begin{list}%
+{\arabic{lastnote}.}
+{\setlength{\leftmargin}{.22in}}
+{\setlength{\labelsep}{.5em}}}
+{\end{list}}
+
+\title{Machine Learning \\ \Large{Assignment 1: Neural Networks} \\[0.3em] \normalsize{Faculty of Informatics} \\ \normalsize{Università della Svizzera Italiana}}
+
+
+\author {{Giorgia Adorni}	\\ \normalsize{giorgia.adormi@usi.ch}}
+
+
+\date{\today}
+
+\bibliography{scibib}
+
+%%%%%%%%%%%%%%%%% END OF PREAMBLE %%%%%%%%%%%%%%%%
+
+\begin{document} 
+
+% Double-space the manuscript.
+%\baselineskip24pt
+
+\maketitle 
+
+%\section*{Introduction}
+
+
+\section{The Perceptron}
+
+
+
+\printbibliography
+\nocite{*}
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
