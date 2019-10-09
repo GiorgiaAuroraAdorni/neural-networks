@@ -264,7 +264,31 @@ For the specific exercise, the equation become:
 
 \Problem{Suppose $k = 3\mbox{, }d =10$, with a batch of data given in Table 1. The initial weights are $w_1 = -0.1$, $w_2 = -0.3$, $w_3 = 0.2$ and the bias weight is $b = 2$. Compute the weights after one step of gradient descent with learning rate of $\eta = 0.02$ (report their value up to 2 decimal points). \textit{Hint: MATLAB/Octave/Python might come in handy here.}}
 
-\Solution{…}
+\Solution{
+	\begin{python}
+		import numpy as np
+				
+		x = np.array([[ -9, -5,    5],
+					   [   4, -7, -11],
+					   [   7,   6,  -1],
+					   [ -9, -5,    4],
+					   [ -5, -6,  -1],
+					   [ -4, -4,  -8],
+					   [   5,   7,  -9],
+					   [   2, -4,    3],
+					   [ -6,   1,    7],
+					   [-10,   6,  -7]],
+					  dtype=np.float32)
+		
+		y_hat = np.array([0, 0, 1, 1, 1, 0, 1, 0, 0, 1], dtype=np.float32)
+		W = np.array([-0.1, -0.3, 0.2], dtype=np.float32)
+		b = 2
+		eta = 0.02
+		
+		y = np.matmul(x, W) + b
+		W_new = W - eta * np.matmul(np.transpose(x), (y - y_hat))
+	\end{python}
+	}
 
 \Problem{Learning in multi-layer neural networks is usually done with help of two methods: back-propagation and gradient descent. Describe briefly what role in the learning process each of the two has (Should not be longer than $6$ lines).}
 
