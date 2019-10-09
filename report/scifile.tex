@@ -36,13 +36,13 @@
 	\setcounter{solution}{0}%
 }
 
-\newcommand\TheSolution{%
+\newcommand\Solution{%
 	\textbf{Solution:}\\%
 }
 
 \newcommand\ASolution{%
 	\stepcounter{solution}%
-	\textbf{Solution \thesolution:}\\%
+	\textbf{Solution \solution:}\\%
 }
 
 \parindent 0in
@@ -80,14 +80,14 @@
 \section{The Perceptron}
 \begin{figure}[h!]
 	
-	\begin{minipage}[c]{.5\textwidth}
+	\begin{minipage}[c]{.49\textwidth}
 		\centering
 		\includegraphics[width=.7\linewidth]{neuron.png}
 		\captionof{figure}{The linear perceptron with single output}
 		\label{fig:test1}
 	\end{minipage}%
 	~
-	\begin{minipage}[c]{.5\textwidth}
+	\begin{minipage}[c]{.49\textwidth}
 		\centering
 			\begin{tabular}{|c|c|c|c|}
 				\hline
@@ -117,32 +117,66 @@ You are given a dataset of size $n: \mathcal{D} = \{(\overline{x}_1 ,\hat{y}_1),
 
 \Problem{What is the dimension of the output vector $\overline{y}$ if we assume a batch of input data in form $\underline{x} \in \mathbb{R}^{d \times k}$?}
 
-\TheSolution {The output shape of the vector $\overline{y}$ is $d$. Given $d$ batch as input, the resulting output as the same dimension $d$.}
+\Solution{The output shape of the vector $\overline{y}$ is $d$. Given $d$ batch as input, the resulting output as the same dimension $d$.}
 
-\Problem{Write down the vectorized equation for the forward pass, if input $\underline{x} \in \mathbb{R}^{d \times k}$ is batch of data, and $\overline{1}_d$ is a length $d$ long vector of ones (watch out for dimensions to match).}
+\Problem{Write down the vectorised equation for the forward pass, if input $\underline{x} \in \mathbb{R}^{d \times k}$ is batch of data, and $\overline{1}_d$ is a length $d$ long vector of ones (watch out for dimensions to match).}
 
-\TheSolution {…}
+\Solution{
+	\begin{equation}
+	\overline{y}=\sigma(\underline{x} \, \underline{W}+\overline{1}_d \, \overline{b}^T)
+	\end{equation}
+where:\begin{itemize}\itemsep-0.7em 
+		\item[-] $\overline{y}$ is the output vector; \\
+		\item[-] $\sigma$ is the activation function; \\
+		\item[-] $\underline{x}$ is the input matrix; \\
+		\item[-] $\underline{W}$ is the parameters matrix (weights); \\
+		\item[-] $\overline{b}^T$ is the bias, that is a vector of $k$; \\
+		\item[-] $\overline{1}_d$ is a vector  with $d$ ones, that is a vector of $k$.
+\end{itemize}
+For the specific exercise, the equation become:
+	\begin{equation}
+	\overline{y}=\underline{x} \, \underline{W}+\overline{1}_d \, b
+	\end{equation}
+	where $b$ is a single term and there isn't any activation function $\sigma$.
+}
 
-\Problem{Write down the vectorized equation for the MSE of the perceptron.}
+\Problem{Write down the vectorised equation for the MSE of the perceptron.}
 
-\TheSolution {…}
+\Solution{	
+	\begin{equation}
+	MSE = \frac{1}{2} \, (\overline{y}-\hat{\overline{y}})^T(\overline{y}-\hat{\overline{y}})
+	\end{equation}}
 
 \Problem{Determine the derivative of the error function w.r.t weights \textit{Hint: $\frac{\partial \overline{x}^T\overline{x}}{\partial\overline{x}^T} = 2\overline{x}$}}
 
-\TheSolution {…}
+\Solution{	
+	\begin{equation}
+	 \frac{\partial E}{\partial \underline{W}}= \frac{\partial \overline{y}}{\partial \underline{W}}\frac{\partial E}{\partial \overline{y}}
+	\end{equation}
+	Since the first factor is $\frac{\partial \overline{y}}{\partial \underline{W}}=\overline{x}^T$ and, using the given hint for the derivative of the inner product, the second factor become $\frac{\partial E}{\partial \overline{y}} = \frac{\partial }{\partial \overline{y}} \frac{1}{2}(\overline{y}-\hat{\overline{y}})^T(\overline{y}-\hat{\overline{y}}) = \frac{1}{2}2(\overline{y}-\hat{\overline{y}})=\overline{y}-\hat{\overline{y}}$
+	
+	 
+	\begin{equation}
+		 \frac{\partial E}{\partial \underline{W}}= \frac{\partial \overline{y}}{\partial \underline{W}}\frac{\partial E}{\partial \overline{y}} = \overline{x}^T(\overline{y}-\hat{\overline{y}})
+	\end{equation}
+}
 
 \Problem{Write down the equation of the weight update by gradient descent.}
 
-\TheSolution {…}
+\Solution{	
+	\begin{equation}
+	\underline{W}^{\mathrm{NEW}}=\underline{W}^{\mathrm{OLD}}-\eta \frac{\partial E}{\partial \underline{W}}=\underline{W}^{\mathrm{OLD}}-\eta \, \overline{x}^T(\overline{y}-\hat{\overline{y}})
+	\end{equation}
+}
 
 \Problem{Suppose $k = 3\mbox{, }d =10$, with a batch of data given in Table 1. The initial weights are $w_1 = -0.1$, $w_2 = -0.3$, $w_3 = 0.2$ and the bias weight is $b = 2$. Compute the weights after one step of gradient descent with learning rate of $\eta = 0.02$ (report their value up to 2 decimal points). \textit{Hint: MATLAB/Octave/Python might come in handy here.}}
 
-\TheSolution {…}
+\Solution{…}
 
 \Problem{Learning in multi-layer neural networks is usually done with help of two methods: back-propagation and gradient descent. Describe briefly what role in the learning process each of the two has (Should not be longer than $6$ lines).}
 
-\TheSolution {…}
-
+\Solution{Back-propagation  procedure (dynamic programming algorithm) for computing the gradient in an efficient way. In particular it consists in calculating the derivative of the error function with respect to the parameters (weights).\\
+Gradient Descent is an algorithm that improve the models performance, decreasing the loss, updating the weights of the network by (using the) gradient (descent).}
 \printbibliography
 \nocite{*}
 
