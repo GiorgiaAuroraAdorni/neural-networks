@@ -8,6 +8,8 @@
 \usepackage[T1]{fontenc} % codifica dei font
 \usepackage[backend=bibtex,sorting=none, backref=true]{biblatex}
 \usepackage{times}
+\usepackage[hidelinks]{hyperref}
+\usepackage{csquotes}
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{graphicx}
@@ -177,8 +179,8 @@
 		\centering
 		\includegraphics[width=.7\linewidth]{neuron.png}
 		\captionof{figure}{The linear perceptron with single output}
-		\label{fig:test1}
-	\end{minipage}%
+		\label{fig:perceptron}
+	\end{minipage}
 	~
 	\begin{minipage}[c]{.49\textwidth}
 		\centering
@@ -197,13 +199,13 @@
 				-10        & 6          & -7         & 1                          \\\hline
 			\end{tabular}
 			\captionof{table}{The training dataset}
-			\label{tab:traind-dataset}
+			\label{tab:train-dataset}
 	
 	\end{minipage}
 \end{figure}
 
 Before working on a neural network we will study the perceptron; a linear classifier
-without an activation function or a very simple single layer network as given in Figure 1.
+without an activation function or a very simple single layer network as given in Figure \ref{fig:perceptron}.
 You are given a dataset of size $n: \mathcal{D} = \{(\overline{x}_1 ,\hat{y}_1),(\overline{x}_n ,\hat{y}_2),\dots , (\overline{x}_n ,\hat{y}_n)\}$, where input is represented as $k$-dimensional vectors $\overline{x}_i \in \mathbb{R}^k$, and the targets $\hat{y}_i \in \mathbb{R}$ are scalar. Assume bias term $b \in \mathbb{R}$ is not part of weight matrix $\underline{W} = [w_1,w_2,\dots,w_k]^T$.
 
 \newpage
@@ -218,14 +220,15 @@ You are given a dataset of size $n: \mathcal{D} = \{(\overline{x}_1 ,\hat{y}_1),
 	\begin{equation}
 	\overline{y}=\sigma(\underline{x} \, \underline{W}+\overline{1}_d \, \overline{b}^T)
 	\end{equation}
-where:\begin{itemize}\itemsep-0.7em 
-		\item[-] $\overline{y}$ is the output vector; \\
-		\item[-] $\sigma$ is the activation function; \\
-		\item[-] $\underline{x}$ is the input matrix; \\
-		\item[-] $\underline{W}$ is the parameters matrix (weights); \\
-		\item[-] $\overline{b}^T$ is the bias, that is a vector of $k$; \\
+	where:
+	\begin{itemize}
+		\item[-] $\overline{y}$ is the output vector; 
+		\item[-] $\sigma$ is the activation function;
+		\item[-] $\underline{x}$ is the input matrix;
+		\item[-] $\underline{W}$ is the parameters matrix (weights);
+		\item[-] $\overline{b}^T$ is the bias, that is a vector of $k$;
 		\item[-] $\overline{1}_d$ is a vector  with $d$ ones, that is a vector of $k$.
-\end{itemize}
+	\end{itemize}
 For the specific exercise, the equation become:
 	\begin{equation}
 	\overline{y}=\underline{x} \, \underline{W}+\overline{1}_d \, b
@@ -246,11 +249,11 @@ For the specific exercise, the equation become:
 	\begin{equation}
 	 \frac{\partial E}{\partial \underline{W}}= \frac{\partial \overline{y}}{\partial \underline{W}}\frac{\partial E}{\partial \overline{y}}
 	\end{equation}
-	Since the first factor is $\frac{\partial \overline{y}}{\partial \underline{W}}=\overline{x}^T$ and, using the given hint for the derivative of the inner product, the second factor become $\frac{\partial E}{\partial \overline{y}} = \frac{\partial }{\partial \overline{y}} \frac{1}{2}(\overline{y}-\hat{\overline{y}})^T(\overline{y}-\hat{\overline{y}}) = \frac{1}{2}2(\overline{y}-\hat{\overline{y}})=\overline{y}-\hat{\overline{y}}$
+	Since the first factor is $\frac{\partial \overline{y}}{\partial \underline{W}}=\underline{x}^T$ and, using the given hint for the derivative of the inner product, the second factor become $\frac{\partial E}{\partial \overline{y}} = \frac{\partial }{\partial \overline{y}} \frac{1}{2}(\overline{y}-\hat{\overline{y}})^T(\overline{y}-\hat{\overline{y}}) = \frac{1}{2}2(\overline{y}-\hat{\overline{y}})=\overline{y}-\hat{\overline{y}}$
 	
 	 
 	\begin{equation}
-		 \frac{\partial E}{\partial \underline{W}}= \frac{\partial \overline{y}}{\partial \underline{W}}\frac{\partial E}{\partial \overline{y}} = \overline{x}^T(\overline{y}-\hat{\overline{y}})
+		 \frac{\partial E}{\partial \underline{W}}= \frac{\partial \overline{y}}{\partial \underline{W}}\frac{\partial E}{\partial \overline{y}} = \underline{x}^T(\overline{y}-\hat{\overline{y}})
 	\end{equation}
 }
 
@@ -258,11 +261,11 @@ For the specific exercise, the equation become:
 
 \Solution{	
 	\begin{equation}
-	\underline{W}^{\mathrm{NEW}}=\underline{W}^{\mathrm{OLD}}-\eta \frac{\partial E}{\partial \underline{W}}=\underline{W}^{\mathrm{OLD}}-\eta \, \overline{x}^T(\overline{y}-\hat{\overline{y}})
+	\underline{W}^{\mathrm{NEW}}=\underline{W}^{\mathrm{OLD}}-\eta \frac{\partial E}{\partial \underline{W}}=\underline{W}^{\mathrm{OLD}}-\eta \, \underline{x}^T(\overline{y}-\hat{\overline{y}})
 	\end{equation}
 }
 
-\Problem{Suppose $k = 3\mbox{, }d =10$, with a batch of data given in Table 1. The initial weights are $w_1 = -0.1$, $w_2 = -0.3$, $w_3 = 0.2$ and the bias weight is $b = 2$. Compute the weights after one step of gradient descent with learning rate of $\eta = 0.02$ (report their value up to 2 decimal points). \textit{Hint: MATLAB/Octave/Python might come in handy here.}}
+\Problem{Suppose $k = 3\mbox{, }d =10$, with a batch of data given in Table \ref{tab:train-dataset}. The initial weights are $w_1 = -0.1$, $w_2 = -0.3$, $w_3 = 0.2$ and the bias weight is $b = 2$. Compute the weights after one step of gradient descent with learning rate of $\eta = 0.02$ (report their value up to 2 decimal points). \textit{Hint: MATLAB/Octave/Python might come in handy here.}}
 
 \Solution{
 	The updated weights are $[2.62, \; 2.44, \; -1.51]$ and the updated bias is $1.66$.
