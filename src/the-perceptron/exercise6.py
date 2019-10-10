@@ -19,9 +19,10 @@ W = np.array([-0.1, -0.3, 0.2],
             dtype=np.float32)
 b = 2
 eta = 0.02
+one = np.ones(10)
 
 y = np.matmul(x, W) + b
 W_new = W - eta * np.matmul(np.transpose(x), (y - y_hat))
+b_new = b - eta * np.matmul(np.transpose(one), (y - y_hat))
 
-print("W_new = ", W_new)
-
+print("New weights = ", W_new, "\nNew bias = ", b_new)
