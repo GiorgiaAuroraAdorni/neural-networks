@@ -318,10 +318,15 @@ def gradient_check():
             var_backup = variable[index]
 
             ## Implement
+            analytic_grad = variable_gradient[index]
 
-            # analytic_grad = 
-            # numeric_grad = 
+            variable[index] = var_backup + eps
+            mse_plus = loss.forward(NN.forward(X), T)
 
+            variable[index] = var_backup - eps
+            mse_minus = loss.forward(NN.forward(X), T)
+
+            numeric_grad = (mse_plus - mse_minus) / (2 * eps)
             ## End
 
             variable[index] = var_backup
@@ -343,7 +348,6 @@ def gradient_check():
 ###############################################################################################################
 
 if __name__ == "__main__":
-    import matplotlib
     import matplotlib.pyplot as plt
 
     np.random.seed(0xDEADBEEF)
