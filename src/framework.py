@@ -32,11 +32,11 @@
 ## You will also have to implement the function train_one_step(), which does one step of weight update based on the
 ## training data and the learning rate.
 ##
-## After implementing the gradinet check, you can be almost sure that your backward functions are correct. In order to
+## After implementing the gradient check, you can be almost sure that your backward functions are correct. In order to
 ## do this, you will have to fill in the analytic and numerical gradient computation part of the gradient_check()
 ## function. What this does is it iterates over all the elements of all variables, nudges it a bit in both directions,
 ## and recalculates the network output. Based on that, you can calculate what the gradient should be if we assume that
-##  the forward pass is correct.
+## the forward pass is correct.
 ##
 ## Finally you would have to complete the create_network() function, which should return a Sequential neural network of
 ## 3 layers: a tanh input layer with 2 inputs and 50 outputs, a tanh hidden layer with 30 outputs and finally a sigmoid
@@ -68,7 +68,9 @@ import numpy as np
 class Tanh:
 
     def forward(self, x):
+        ## Implement
         result = (np.exp(x) - np.exp(-x)) / (np.exp(x) + np.exp(-x))
+        ## End
 
         self.saved_variables = {
             "result": result
@@ -78,9 +80,10 @@ class Tanh:
     def backward(self, error):
         tanh_x = self.saved_variables["result"]
 
+        ## Implement
         # d_x = np.matmul(1 - ((np.exp(tanh_x) - np.exp(- tanh_x) ** 2)  / (np.exp(tanh_x) + np.exp(- tanh_x) ** 2)), error)
-        d_x = np.matmul(1 - np.tanh(tanh_x) ** 2, error)
-
+        d_x = (1 - tanh_x ** 2) * error
+        ## End
         assert d_x.shape == tanh_x.shape, "Input: grad shape differs: %s %s" % (d_x.shape, tanh_x.shape)
 
         self.saved_variables = None
@@ -89,7 +92,9 @@ class Tanh:
 
 class Sigmoid:
     def forward(self, x):
+        ## Implement
         result = 1 / (1 + np.exp(-x))
+        ## End
 
         self.saved_variables = {
             "result": result
@@ -99,7 +104,9 @@ class Sigmoid:
     def backward(self, error):
         sigmoid_x = self.saved_variables["result"]
 
-        d_x = np.matmul(sigmoid_x * (1 - sigmoid_x), error)
+        ## Implement
+        d_x = (sigmoid_x * (1 - sigmoid_x)) * error
+        ## End
 
         assert d_x.shape == sigmoid_x.shape, "Input: grad shape differs: %s %s" % (d_x.shape, sigmoid_x.shape)
 
@@ -119,6 +126,7 @@ class Linear:
         W = self.var['W']
         b = self.var['b']
 
+        ## Implement
         y = np.matmul(x, W) + b
 
         ## Save your variables needed in backward pass to self.saved_variables.
@@ -127,9 +135,12 @@ class Linear:
             "W": W,
             "b": b
         }
+        ## End
+
         return y
 
     def backward(self, error):
+        ## Implement
         x = self.saved_variables["x"]
         W = self.saved_variables["W"]
         # b = self.saved_variables["b"]
@@ -137,7 +148,8 @@ class Linear:
         dW = np.matmul(np.transpose(x), error)
         db = np.matmul(np.ones(x.shape[0]), error)
 
-        d_inputs = np.matmul(np.transpose(W), error)
+        d_inputs = np.matmul(error, W.T)
+        ## End
 
         assert d_inputs.shape == x.shape, "Input: grad shape differs: %s %s" % (d_inputs.shape, x.shape)
         assert dW.shape == self.var["W"].shape, "W: grad shape differs: %s %s" % (dW.shape, self.var["W"].shape)
