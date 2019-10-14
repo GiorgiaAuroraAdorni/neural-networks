@@ -145,7 +145,7 @@ class Linear:
         W = self.saved_variables["W"]
         # b = self.saved_variables["b"]
 
-        dW = np.matmul(np.transpose(x), error)
+        dW = np.matmul((x).T, error)
         db = np.matmul(np.ones(x.shape[0]), error)
 
         d_inputs = np.matmul(error, W.T)
@@ -155,7 +155,6 @@ class Linear:
         assert dW.shape == self.var["W"].shape, "W: grad shape differs: %s %s" % (dW.shape, self.var["W"].shape)
         assert db.shape == self.var["b"].shape, "b: grad shape differs: %s %s" % (db.shape, self.var["b"].shape)
 
-        # FIXME
         self.saved_variables = None
         updates = {"W": dW,
                    "b": db}
@@ -239,8 +238,7 @@ class MSE:
         n = prediction.size
 
         ## Implement
-        # FIXME np.matmul could be np.dot (check transpose)
-        meanError = 1/n * np.matmul(np.transpose(Y - T), (Y - T))
+        meanError = 1/(2 * n) * np.matmul((Y - T).T, (Y - T))
 
         ## Save your variables needed for backward to self.saved_variables.
         self.saved_variables = {
@@ -258,7 +256,7 @@ class MSE:
         t = self.saved_variables['T']
         n = self.saved_variables['n']
 
-        d_prediction = 2/n * (y - t)
+        d_prediction = 1/n * (y - t)
         ## End
 
         assert d_prediction.shape == y.shape, "Error shape doesn't match prediction: %d %d" % \
