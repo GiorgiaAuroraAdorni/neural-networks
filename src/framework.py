@@ -208,7 +208,12 @@ class Sequential:
 
     def forward(self, input):
         ## Implement
+        y = input
 
+        for l in self.modules:
+            y = l.forward(y)
+
+        return y
         ## End
 
     def backward(self, error):
@@ -218,11 +223,9 @@ class Sequential:
             module = self.modules[module_index]
 
             ## Implement
-
-            # module_variable_grad =
-            # module_input_grad =
-
+            module_variable_grad, module_input_grad = module.backward(error)
             ## End
+
             error = module_input_grad
             variable_grads = self.update_variable_grads(variable_grads, module_index, module_variable_grad)
 
@@ -236,19 +239,28 @@ class MSE:
         n = prediction.size
 
         ## Implement
-        ## Don't forget to save your variables needed for backward to self.saved_variables..
+        # FIXME np.matmul could be np.dot (check transpose)
+        meanError = 1/n * np.matmul(np.transpose(Y - T), (Y - T))
 
-        # meanError = 
-
+        ## Save your variables needed for backward to self.saved_variables.
+        self.saved_variables = {
+            "Y": Y,
+            "T": T,
+            "n": n
+        }
         ## End
+
         return meanError
 
     def backward(self):
         ## Implement
+        y = self.saved_variables['Y']
+        t = self.saved_variables['T']
+        # n = self.saved_variables['n']
 
-        # d_prediction = 
-
+        d_prediction = y - t
         ## End
+
         assert d_prediction.shape == y.shape, "Error shape doesn't match prediction: %d %d" % \
                                               (d_prediction.shape, y.shape)
 
@@ -258,17 +270,24 @@ class MSE:
 
 def train_one_step(model, loss, learning_rate, inputs, targets):
     ## Implement
+    # one step of weight update based on the training data and the learning rate.
+    error = loss.forward(model.forward(inputs), targets)
+    variable_gradients, _ = model.backward(loss.backward())
 
+    for key, item in variable_gradients.items():
+        model.var[key] = model.var[key] - learning_rate * item
     ## End
+
     return error
 
 
 def create_network():
     ## Implement
-    
-    # network = 
-
+    # 3 layers: a tanh input layer with 2 inputs and 50 outputs, a tanh hidden layer with 30 outputs and finally a
+    # sigmoid output layer with 1 output.
+    network = Sequential([Linear(2, 50), Tanh(), Linear(50, 30), Tanh(), Linear(30, 1), Sigmoid()])
     ## End
+
     return network
 
 
