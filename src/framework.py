@@ -256,9 +256,9 @@ class MSE:
         ## Implement
         y = self.saved_variables['Y']
         t = self.saved_variables['T']
-        # n = self.saved_variables['n']
+        n = self.saved_variables['n']
 
-        d_prediction = y - t
+        d_prediction = 2/n * (y - t)
         ## End
 
         assert d_prediction.shape == y.shape, "Error shape doesn't match prediction: %d %d" % \
