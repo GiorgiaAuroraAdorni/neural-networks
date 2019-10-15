@@ -235,6 +235,15 @@ for epoch in range(1000):
     ## Hint: you should check if current accuracy is better than the best so far. If it is not, check before how many
     ## iterations ago the best one came, and terminate if it is more than 10. Also update the best_* variables
     ## if needed.
+    if validation_accuracy > best_validation_accuracy:
+        best_validation_accuracy = validation_accuracy
+        best_epoch = epoch
+        print("\tThe epoch %d has the current best accuracy equal to %.2f%%. We wait %d interations for having it." % (
+            best_epoch, best_validation_accuracy, epoch - best_epoch))
+    else:
+        if epoch - best_epoch > 10:
+            print("\tThe current best accuracy didn't change after %d iterations." % (epoch - best_epoch))
+            break
     # end
 
 print("Test set performance: %.2f%%" % test())
