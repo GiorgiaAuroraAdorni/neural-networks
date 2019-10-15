@@ -18,6 +18,7 @@
 \usepackage{mathtools}
 \usepackage{listings,lstautogobble}
 \usepackage{xcolor}
+\usepackage{float}
 
 \definecolor{gray}{gray}{0.5}
 \colorlet{commentcolour}{green!50!black}
@@ -156,7 +157,7 @@
 \title{Machine Learning \\ \Large{Assignment 1: Neural Networks} \\[0.3em] \normalsize{Faculty of Informatics} \\ \normalsize{Università della Svizzera Italiana}}
 
 
-\author {{Giorgia Adorni}	\\ \normalsize{giorgia.adormi@usi.ch}}
+\author {{Giorgia Adorni}	\\ \normalsize{giorgia.adorni@usi.ch}}
 
 
 \date{\today}
@@ -173,8 +174,12 @@
 \maketitle 
 
 \section{The Perceptron}
-\begin{figure}[h!]
-	
+
+Before working on a neural network we will study the perceptron; a linear classifier
+without an activation function or a very simple single layer network as given in Figure \ref{fig:perceptron}.
+You are given a dataset of size $n: \mathcal{D} = \{(\overline{x}_1 ,\hat{y}_1),(\overline{x}_n ,\hat{y}_2),\dots , (\overline{x}_n ,\hat{y}_n)\}$, where input is represented as $k$-dimensional vectors $\overline{x}_i \in \mathbb{R}^k$, and the targets $\hat{y}_i \in \mathbb{R}$ are scalar. Assume bias term $b \in \mathbb{R}$ is not part of weight matrix $\underline{W} = [w_1,w_2,\dots,w_k]^T$.
+
+\begin{figure}[H]
 	\begin{minipage}[c]{.49\textwidth}
 		\centering
 		\includegraphics[width=.7\linewidth]{neuron.png}
@@ -184,31 +189,24 @@
 	~
 	\begin{minipage}[c]{.49\textwidth}
 		\centering
-			\begin{tabular}{|c|c|c|c|}
-				\hline
-				$\overline{x}_{i,1}$ & $\overline{x}_{i,2}$ & $\overline{x}_{i,3}$ & $\hat{y}_i$ \\\hline
-				-9         & -5         & 5          & 0                           \\\hline
-				4          & -7         & -11        & 0                           \\\hline
-				7          & 6          & -1         & 1                           \\\hline
-				-9         & -5         & 4          & 1                           \\\hline
-				-5         & -6         & -1         & 1                           \\\hline
-				-4         & -4         & -8         & 0                           \\\hline
-				5          & 7          & -9         & 1                           \\\hline
-				2          & -4         & 3          & 0                           \\\hline
-				-6         & 1          & 7          & 0                           \\\hline
-				-10        & 6          & -7         & 1                          \\\hline
-			\end{tabular}
-			\captionof{table}{The training dataset}
-			\label{tab:train-dataset}
-	
+		\begin{tabular}{|c|c|c|c|}
+			\hline
+			$\overline{x}_{i,1}$ & $\overline{x}_{i,2}$ & $\overline{x}_{i,3}$ & $\hat{y}_i$ \\\hline
+			-9         & -5         & 5          & 0                           \\\hline
+			4          & -7         & -11        & 0                           \\\hline
+			7          & 6          & -1         & 1                           \\\hline
+			-9         & -5         & 4          & 1                           \\\hline
+			-5         & -6         & -1         & 1                           \\\hline
+			-4         & -4         & -8         & 0                           \\\hline
+			5          & 7          & -9         & 1                           \\\hline
+			2          & -4         & 3          & 0                           \\\hline
+			-6         & 1          & 7          & 0                           \\\hline
+			-10        & 6          & -7         & 1                           \\\hline
+		\end{tabular}
+		\captionof{table}{The training dataset}
+		\label{tab:train-dataset}
 	\end{minipage}
 \end{figure}
-
-Before working on a neural network we will study the perceptron; a linear classifier
-without an activation function or a very simple single layer network as given in Figure \ref{fig:perceptron}.
-You are given a dataset of size $n: \mathcal{D} = \{(\overline{x}_1 ,\hat{y}_1),(\overline{x}_n ,\hat{y}_2),\dots , (\overline{x}_n ,\hat{y}_n)\}$, where input is represented as $k$-dimensional vectors $\overline{x}_i \in \mathbb{R}^k$, and the targets $\hat{y}_i \in \mathbb{R}$ are scalar. Assume bias term $b \in \mathbb{R}$ is not part of weight matrix $\underline{W} = [w_1,w_2,\dots,w_k]^T$.
-
-\newpage
 
 \Problem{What is the dimension of the output vector $\overline{y}$ if we assume a batch of input data in form $\underline{x} \in \mathbb{R}^{d \times k}$?}
 
