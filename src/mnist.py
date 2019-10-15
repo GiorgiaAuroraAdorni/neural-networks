@@ -152,14 +152,22 @@ indices = np.random.permutation(len(train_validation_set))
 ## train_validation_set.images[your_indices[i: i+batch_size]] and
 ## train_validation_set.labels[your_indices[i: i+batch_size]]
 
-# train_indices =
-# validation_indices =
-
+train_indices = indices[:n_train]
+validation_indices = indices[n_train:]
 ## End
+
 
 def verify(images, targets):
     ## Implement
+    ##  * verify() function is there in order to be used both in the validate() and test() functions for error measurement
+    ##  without code duplication (just the input data should be different).
+    y = model.forward(images)
+    i = np.argmax(y, axis=1)
+
+    num_ok = np.sum(i == targets)
+    total_num = len(i)
     ## End
+
     return num_ok, total_num
 
 
@@ -168,6 +176,15 @@ def validate():
     count = 0
 
     ## Implement. Use the verify() function to verify your data.
+    for i in range(0, len(validation_indices), batch_size):
+        images = train_validation_set.images[validation_indices[i: i+batch_size]]
+        labels = train_validation_set.labels[validation_indices[i: i+batch_size]]
+
+        ## Implement. Use the verify() function to verify your data.
+        num_ok, total_num = verify(images, labels)
+
+        accu += num_ok
+        count += total_num
     ## End
 
     return accu / count * 100.0
@@ -182,6 +199,10 @@ def test():
         labels = test_set.labels[i:i + batch_size]
 
         ## Implement. Use the verify() function to verify your data.
+        num_ok, total_num = verify(images, labels)
+
+        accu += num_ok
+        count += total_num
         ## End
 
     return accu / count * 100.0
@@ -195,8 +216,17 @@ best_epoch = -1
 
 for epoch in range(1000):
     ## Implement
-    # error =
-    # validation_accuracy =
+    mean_error = 0
+    for i in range(0, len(train_indices), batch_size):
+        images = train_validation_set.images[train_indices[i: i+batch_size]]
+        labels = train_validation_set.labels[train_indices[i: i+batch_size]]
+
+        error = lib.train_one_step(model, loss, learning_rate, images, labels)
+
+        mean_error += (error * len(labels))
+
+    error = mean_error / len(train_indices)
+    validation_accuracy = validate()
     ## End
 
     print("Epoch %d: loss: %f, validation accuracy: %.2f%%" % (epoch, error, validation_accuracy))
