@@ -69,7 +69,8 @@ class Tanh:
 
     def forward(self, x):
         ## Implement
-        result = (np.exp(x) - np.exp(-x)) / (np.exp(x) + np.exp(-x))
+        # result = (np.exp(x) - np.exp(-x)) / (np.exp(x) + np.exp(-x))
+        result = np.tanh(x)
         ## End
 
         self.saved_variables = {
