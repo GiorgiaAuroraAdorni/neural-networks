@@ -216,16 +216,16 @@ best_epoch = -1
 
 for epoch in range(1000):
     ## Implement
-    mean_error = 0
+    avg_error = 0
     for i in range(0, len(train_indices), batch_size):
         images = train_validation_set.images[train_indices[i: i+batch_size]]
         labels = train_validation_set.labels[train_indices[i: i+batch_size]]
 
-        error = lib.train_one_step(model, loss, learning_rate, images, labels)
+        # the error is computed and multiplied for the number of sample in the batch
+        avg_error += lib.train_one_step(model, loss, learning_rate, images, labels) * len(labels)
 
-        mean_error += (error * len(labels))
-
-    error = mean_error / len(train_indices)
+    # the final error is divided by the total number of samples
+    error = avg_error / len(train_indices)
     validation_accuracy = validate()
     ## End
 
