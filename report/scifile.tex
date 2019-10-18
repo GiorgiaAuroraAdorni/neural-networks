@@ -74,7 +74,7 @@
 	emphstyle=[3]\color{commandcolour},
 	morecomment=[s]{"""}{"""},
 	commentstyle=\color{commentcolour}\slshape,
-	emph={array, matmul, transpose, float32},
+	emph={array, matmul, ones, T, transpose, float32},
 	emphstyle=[4]\color{numpycolour},
 	emph={[5]assert,yield},
 	emphstyle=[5]\color{keywordcolour}\bfseries,
@@ -237,11 +237,10 @@
 	assume a batch of input data in form $\underline{x} \in \mathbb{R}^{d 
 	\times k}$?}\medskip
 	
-	\Solution{The output shape of the vector $\overline{y}$ is $d$. Given $d$ 
-	batch as input, since the output is just one we have one output for each 
-	element in the batch. \textbf{FIXME:} the resulting output as the same 
-	dimension.
-	$d$.}\vspace{0.4cm}
+	\Solution{The output shape of the vector $\overline{y}$ is $d$. Given as 
+	input $d$ sample for each batch, since the output is just one, we have one 
+	output for each 
+	element in the batch, so $1 \times d$ output.}\vspace{0.4cm}
 	
 	\Problem{Write down the vectorised equation for the forward pass, if input 
 	$\underline{x} \in \mathbb{R}^{d \times k}$ is batch of data, and 
@@ -250,25 +249,22 @@
 	
 	\Solution{
 		\begin{equation}
-		\overline{y}=\sigma(\underline{x} \, \underline{W}+\overline{1}_d \, 
-		\overline{b}^T)
+		\overline{y}=\underline{x} \, \underline{W}+\overline{1}_d \, b \mbox{ 
+		,}
 		\end{equation}
-		where:
+		\\where:
 		\begin{itemize}
 			\item[-] $\overline{y}$ is the output vector; 
-			\item[-] $\sigma$ is the activation function;
 			\item[-] $\underline{x}$ is the input matrix;
 			\item[-] $\underline{W}$ is the parameters matrix (weights);
-			\item[-] $\overline{b}^T$ is the bias, that is a vector of $k$;
-			\item[-] $\overline{1}_d$ is a vector  with $d$ ones, that is a 
-			vector of $k$.
+			\item[-] ${b}$ is the bias;
+			\item[-] $\overline{1}_d$ is a vector  with $d$ ones.
 		\end{itemize}
-		For the specific case, the equation becomes:
-		\begin{equation}
-		\overline{y}=\underline{x} \, \underline{W}+\overline{1}_d \, b
-		\end{equation}
-		where $b$ is a single term and there is not any activation function 
-		$\sigma$.
+		In this specific case, the equation does not have the multiplication by 
+		the activation function $\sigma$, and the bias $b$ is a scalar and not 
+		a transposed vector like in the general formula $\overline{y} = 
+		\sigma(\underline{x} \, \underline{W} + \overline{1}_d \, 
+		\overline{b}^T)$
 	}\vspace{0.4cm}
 	
 	\Problem{Write down the vectorised equation for the MSE of the 
@@ -276,12 +272,13 @@
 	
 	\Solution{	
 		\begin{equation}
-		MSE = \frac{1}{2} \, 
+		MSE = \frac{1}{2 \, d} \, 
 		(\overline{y}-\hat{\overline{y}})^T(\overline{y}-\hat{\overline{y}})
 		\end{equation}
 	
 		where:
 		\begin{itemize}
+			\item[-] $d$ is the number of samples in the batch; 
 			\item[-] $\hat{\overline{y}}$ is the target vector; 
 			\item[-] ${\overline{y}}$ is the predicted vector.
 		\end{itemize}}\vspace{0.4cm}
@@ -311,16 +308,17 @@
 		\begin{equation*}
 		\frac{\partial E}{\partial \overline{y}} = \frac{\partial }{\partial 
 			\overline{y}} 
-		\frac{1}{2}(\overline{y}-\hat{\overline{y}})^T(\overline{y}-\hat{\overline{y}})
+		\frac{1}{2  \, d} (\overline{y} - \hat{\overline{y}})^T (\overline{y} - 
+		\hat{\overline{y}})
 		= 
-		\frac{1}{2}\, 2 \, (\overline{y}-\hat{\overline{y}}) = 
-		\overline{y}-\hat{\overline{y}}
+		\frac{1}{2 \, d}\, 2 \, (\overline{y}-\hat{\overline{y}}) = \frac{1}{d} 
+		\, (\overline{y}-\hat{\overline{y}})
 		\end{equation*}
 		and
 		\begin{equation*}
 			\frac{\partial \overline{y}}{\partial\underline{W}}= 
 			\frac{\partial}{\partial\underline{W}}\underline{x} \, 
-			\underline{W} + \overline{1}_d \, b = \underline{x}^T
+			\underline{W} + \overline{1}_d \, b = \underline{x}^T \mbox{ ,}
 		\end{equation*}
 		 
 		\begin{equation*}
@@ -331,19 +329,21 @@
 		
 		\begin{itemize}
 			\item weights:
-			\begin{equation}
+			\begin{equation}\label{equation: weights}
 			\frac{\partial E}{\partial \underline{W}}= \frac{\partial 
-				\overline{y}}{\partial \underline{W}}\frac{\partial E}{\partial 
-				\overline{y}} = \underline{x}^T \, (\overline{y} - 
-				\hat{\overline{y}})
-			\end{equation}
-			\item bias:
-			\begin{equation}
-			\frac{\partial E}{\partial {b}}= \frac{\partial 
-				\overline{y}}{\partial {b}}\frac{\partial E}{\partial 
-				\overline{y}} = \overline{1}_d^T \, (\overline{y} - 
+			\overline{y}}{\partial \underline{W}}\frac{\partial E}{\partial 
+			\overline{y}} = \frac{1}{d} \, \underline{x}^T \, (\overline{y} - 
 			\hat{\overline{y}})
 			\end{equation}
+			
+			\item bias:
+			\begin{equation}\label{equation: bias}
+			\frac{\partial E}{\partial {b}}= \frac{\partial 
+			\overline{y}}{\partial {b}}\frac{\partial E}{\partial \overline{y}} 
+			= \frac{1}{d} \, \overline{1}_d^T \, (\overline{y} - 
+			\hat{\overline{y}})
+			\end{equation}
+			
 		\end{itemize}
 	}\vspace{0.4cm}
 	
@@ -351,19 +351,23 @@
 	descent.}\medskip
 	
 	\Solution{	
+		From the derivatives of the error function defined in the Equations 
+		\ref{equation: weights} and \ref{equation: bias}, we can compute the 
+		parameters update using the following formulas:
 		\begin{itemize}
 		\item weights:
 			\begin{equation}
 				\underline{W}^{\mathrm{NEW}}=\underline{W}^{\mathrm{OLD}}-\eta 
 				\frac{\partial E}{\partial\underline{W}} = 
-				\underline{W}^{\mathrm{OLD}}-\eta \, 
+				\underline{W}^{\mathrm{OLD}} - \eta \, \frac{1}{d} \, 
 				\underline{x}^T(\overline{y}-\hat{\overline{y}})
 			\end{equation}
 		\item bias:
 			\begin{equation}
 				{b}^{\mathrm{NEW}}={b}^{\mathrm{OLD}}-\eta 
 				\frac{\partial E}{\partial {b}} = {b}^{\mathrm{OLD}}-\eta \, 
-				\overline{1}_d^T (\overline{y} -\hat{\overline{y}})
+				\frac{1}{d} \, \overline{1}_d^T (\overline{y} - 
+				\hat{\overline{y}})
 			\end{equation}
 		\end{itemize}
 	}\vspace{0.4cm}
@@ -376,39 +380,36 @@
 	MATLAB/Octave/Python might come in handy here.}}\medskip
 	
 	\Solution{
-		The updated weights are $[2.62, \; 2.44, \; -1.51]$ and the updated 
-		bias is $1.66$.
+		The updated weights are $[0.17, \; -0.03, \; 0.03]$ and the updated 
+		bias is $1.97$.
 		
 		\begin{python}
-		import numpy as np
+import numpy as np
 			
-		x = np.array([[ -9, -5,    5],
-					   [   4, -7, -11],
-					   [   7,   6,  -1],
-					   [ -9, -5,    4],
-					   [ -5, -6,  -1],
-					   [ -4, -4,  -8],
-					   [   5,   7,  -9],
-					   [   2, -4,    3],
-					   [ -6,   1,    7],
-					   [-10,   6,  -7]], 
-					   dtype=np.float32)
-			
-		y_hat = np.array([0, 0, 1, 1, 1, 0, 1, 0, 0, 1], 
-						  dtype=np.float32)
-			
-		W = np.array([-0.1, -0.3, 0.2], 
-					  dtype=np.float32)
-		b = 2
-			
-		eta = 0.02
-		ones = np.ones(10)
-			
-		y = np.matmul(x, W) + b
-		W_new = W - eta * np.matmul(np.transpose(x), (y - y_hat))
-		b_new = b - eta * np.matmul(np.transpose(ones), (y - y_hat))
-			
-		print("New weights = ", W_new, "\nNew bias = ", b_new)
+x = np.array([[ -9, -5,    5],
+			   [   4, -7, -11],
+			   [   7,   6,  -1],
+			   [ -9, -5,    4],
+			   [ -5, -6,  -1],
+			   [ -4, -4,  -8],
+			   [   5,   7,  -9],
+			   [   2, -4,    3],
+			   [ -6,   1,    7],
+			   [-10,   6,  -7]], dtype=np.float32)
+			   
+y_hat = np.array([0, 0, 1, 1, 1, 0, 1, 0, 0, 1], dtype=np.float32)
+	
+W = np.array([-0.1, -0.3, 0.2], dtype=np.float32)
+b = 2			
+eta = 0.02
+ones_d = np.ones(10)
+y = np.matmul(x, W) + b
+delta = y - y_hat
+
+W_new = W - eta * np.matmul(x.T, delta) * (1 / d)
+b_new = b - eta * np.matmul(ones_d.T, delta) * (1 / d)
+
+print("New weights = ", W_new.round(2), " \nNew bias = %.2f" % b_new)
 		\end{python}
 		
 	}\vspace{0.4cm}
@@ -425,7 +426,7 @@
 	
 	Gradient descent is an iterative optimization algorithm that tries to 
 	improve the model performance finding a local minimum of a given loss 
-	function, updating the network parameters(weights and bias) by using the 
+	function, updating the network parameters (weights and bias) by using the 
 	gradient of this function. }
 
 \end{document}
